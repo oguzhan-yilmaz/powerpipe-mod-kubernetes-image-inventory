@@ -1,7 +1,7 @@
 
 
 dashboard "pod_images" {
-  title = "Pod Images"
+  title = "All Pod Images"
   table {
     title = "Pod Images"
     width = 12
