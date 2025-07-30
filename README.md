@@ -1,85 +1,139 @@
-# powerpipe-mod-kubernetes-image-inventory
+# Kubernetes Image Inventory - Powerpipe Mod
+
+A Powerpipe mod for inventorying and analyzing container images across Kubernetes clusters.
 
 
-<!-- 
-.containers
-.init_containers
-.ephemeral_containers -->
+Thanks to Bitnami, this project was required.
 
 
+## 🚀 Features
 
-## Installation
+- **Comprehensive Image Inventory**: Track container images, namespaces, pods, and pull policies
+- **Multi-cluster Support**: Query container images across multiple Kubernetes clusters simultaneously
+- **Interactive Dashboards**: Visualize your container image landscape with Powerpipe dashboards
 
+
+## 📋 Prerequisites
+
+- [Powerpipe](https://powerpipe.io/) installed
+- [Steampipe](https://steampipe.io/) installed
+- [Kubernetes plugin](https://hub.steampipe.io/plugins/turbot/kubernetes) for Steampipe
+- Access to Kubernetes cluster(s) via kubeconfig
+
+## 🛠️ Installation
+
+### 1. Install Powerpipe and Steampipe
+
+Download and install [Powerpipe](https://powerpipe.io/downloads) and [Steampipe](https://steampipe.io/downloads).
 
 ```bash
+# macOS
 brew install turbot/tap/steampipe
 brew install turbot/tap/powerpipe
+```
 
-# install kubernetes plugin
+### 2. Install Kubernetes Plugin
+
+```bash
 steampipe plugin install kubernetes
 steampipe service restart
 ```
 
+### 3. Initialize Powerpipe Project
 
 ```bash
-mkdir my-powerpipe
-cd my-powerpipe
+mkdir my-powerpipe-project
+cd my-powerpipe-project
 
-# 'mod init' will create mod.pp file which is needed
+# Initialize a new Powerpipe mod
 powerpipe mod init
 ```
 
+### 4. Install `powerpipe-mod-kubernetes-image-inventory` mod
 
 ```bash
 powerpipe mod install github.com/oguzhan-yilmaz/powerpipe-mod-kubernetes-image-inventory
 ```
 
+### 5. Start Powerpipe Server
+
 ```bash
 powerpipe server
 ```
 
-Visit [localhost:9093](http://localhost:9033/) to see Powerpipe Dashboards.
+Visit [http://localhost:9033](http://localhost:9033) to access your dashboards.
 
+## ⚙️ Configuration
 
-## Configuration
+### Single Cluster Setup
 
-### Multi Kubernetes Cluster Connections
+For a single Kubernetes cluster, the default configuration should work automatically if you have a valid kubeconfig file at `~/.kube/config`.
 
-Steampipe supports querying multiple Kubernetes clusters simultaneously by configuring multiple connections and aggregating them. Here's how to set it up:
+### Multi-Cluster Setup
+
+This mod supports querying multiple Kubernetes clusters simultaneously. Configure multiple connections and aggregate them:
+
+1. **Edit the Kubernetes configuration file:**
 
 ```bash
 vim $HOME/.steampipe/config/kubernetes.spc
 ```
 
+2. **Add your cluster configurations:**
+
 ```hcl
+# Production EKS Cluster
 connection "kubernetes_eks_prod" {
   plugin         = "kubernetes"
   config_path    = "~/.kube/config"
-  // CHANGE CONTEXT NAME
-  config_context = "eks-prod-cluster" 
+  config_context = "eks-prod-cluster"  // Change to your context name
   source_types   = ["deployed"]
   custom_resource_tables = ["*"]
 }
 
-connection "kubernetes_gcp_staging" {
+# Staging GKE Cluster
+connection "kubernetes_gke_staging" {
   plugin         = "kubernetes"
   config_path    = "~/.kube/config"
-  // CHANGE CONTEXT NAME
-  config_context = "gcp-staging"  
+  config_context = "gke-staging"       // Change to your context name
   source_types   = ["deployed"]
   custom_resource_tables = ["*"]
 }
 
-// add any more context here
 
-// IMPORTANT: create 'kubernetes' aggregator with all kube contexts!
+# Aggregator connection - combines all clusters
 connection "kubernetes" {
   plugin      = "kubernetes"
   type        = "aggregator"
-  connections = ["kubernetes_eks_prod", "kubernetes_gcp_staging"]
+  connections = ["kubernetes_eks_prod", "kubernetes_gke_staging"]
 }
 ```
 
+3. **Restart Steampipe service:**
+
 ```bash
 steampipe service restart
+```
+
+
+## 🎯 Use Cases
+
+- **Image Inventory**: Track all container images deployed across your clusters
+- **Security Auditing**: Identify outdated or vulnerable images
+- **Cost Optimization**: Find duplicate or unused images
+- **Compliance**: Ensure all images follow your organization's policies
+- **Migration Planning**: Understand image usage patterns for cluster migrations
+
+### Debug Commands
+
+```bash
+# Verify plugin and mod installation
+steampipe plugin list
+powerpipe mod list
+
+# Check available contexts
+kubectl config get-contexts
+
+# Test your Kubernetes connections available to Stempipe
+steampipe query "SELECT DISTINCT(context_name) FROM kubernetes_namespace"
 ```
