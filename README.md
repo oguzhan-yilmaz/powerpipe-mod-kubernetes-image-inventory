@@ -5,6 +5,8 @@ A Powerpipe mod for inventorying and analyzing container images across Kubernete
 
 Thanks to Bitnami, this project was required.
 
+![Search Images Powerpipe Dashboard](docs/assets/search-images-dashboard.png)
+
 
 ## 🚀 Features
 
