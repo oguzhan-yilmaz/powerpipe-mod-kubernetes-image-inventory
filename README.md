@@ -8,17 +8,9 @@ Thanks to Bitnami, this project was required.
 
 ## 🚀 Features
 
-- **Comprehensive Image Inventory**: Track container images, namespaces, pods, and pull policies
+- **Container Image Inventory**: Track container images, versions, and pull policies
 - **Multi-cluster Support**: Query container images across multiple Kubernetes clusters simultaneously
-- **Interactive Dashboards**: Visualize your container image landscape with Powerpipe dashboards
-
-
-## 📋 Prerequisites
-
-- [Powerpipe](https://powerpipe.io/) installed
-- [Steampipe](https://steampipe.io/) installed
-- [Kubernetes plugin](https://hub.steampipe.io/plugins/turbot/kubernetes) for Steampipe
-- Access to Kubernetes cluster(s) via kubeconfig
+- **Interactive Dashboards**: Visualize your container images and download them as CSV
 
 ## 🛠️ Installation
 
