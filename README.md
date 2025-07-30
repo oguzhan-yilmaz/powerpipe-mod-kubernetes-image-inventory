@@ -1,0 +1,1 @@
+# powerpipe-mod-kubernetes-image-inventory
