@@ -157,5 +157,5 @@ powerpipe mod list
 kubectl config get-contexts
 
 # Test your Kubernetes connections available to Stempipe
-steampipe query "SELECT DISTINCT(context_name) FROM kubernetes_namespace"
+steampipe query "SELECT DISTINCT(context_name) FROM kubernetes.kubernetes_namespace"
 ```
