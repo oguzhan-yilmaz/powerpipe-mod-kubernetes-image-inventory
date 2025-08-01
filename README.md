@@ -59,21 +59,48 @@ Visit [http://localhost:9033](http://localhost:9033) to access your dashboards.
 
 ## ⚙️ Configuration
 
-### Single Cluster Setup
+This plugin will use the Steampipe Connection named `kubernetes`:
 
-For a single Kubernetes cluster, the default configuration should work automatically if you have a valid kubeconfig file at `~/.kube/config`.
+- **single-cluster**: single connection with correct `config_context`
+- **multi-cluster**: many connections and aggregator type connection named `kubernetes`
 
-### Multi-Cluster Setup
 
-This mod supports querying multiple Kubernetes clusters simultaneously. Configure multiple connections and aggregate them:
-
-1. **Edit the Kubernetes configuration file:**
+**Edit the Kubernetes configuration file:**
 
 ```bash
 vim $HOME/.steampipe/config/kubernetes.spc
 ```
 
-2. **Add your cluster configurations:**
+
+### Single Cluster Setup
+
+For a single Kubernetes cluster, create single connection like: `connection "kubernetes" {...}`
+
+
+1. **Add your cluster configuration:**
+
+```hcl
+# Production EKS Cluster
+connection "kubernetes" {
+  plugin         = "kubernetes"
+  config_path    = "~/.kube/config"
+  config_context = "default"  // Change to your context name
+  source_types   = ["deployed"]
+  custom_resource_tables = ["*"]
+}
+```
+
+2. **Restart Steampipe service:**
+
+```bash
+steampipe service restart
+```
+
+### Multi-Cluster Setup
+
+This mod supports querying multiple Kubernetes clusters simultaneously. Configure multiple connections and aggregate them:
+
+1. **Add your cluster configurations:**
 
 ```hcl
 # Production EKS Cluster
@@ -96,6 +123,7 @@ connection "kubernetes_gke_staging" {
 
 
 # Aggregator connection - combines all clusters
+# MUST BE NAMED kubernetes
 connection "kubernetes" {
   plugin      = "kubernetes"
   type        = "aggregator"
@@ -103,7 +131,7 @@ connection "kubernetes" {
 }
 ```
 
-3. **Restart Steampipe service:**
+2. **Restart Steampipe service:**
 
 ```bash
 steampipe service restart
