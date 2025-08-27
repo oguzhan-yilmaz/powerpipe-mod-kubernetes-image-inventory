@@ -30,7 +30,8 @@ brew install turbot/tap/powerpipe
 
 ```bash
 steampipe plugin install kubernetes
-steampipe service restart
+steampipe service start
+# or steampipe service restart
 ```
 
 ### 3. Initialize Powerpipe Project
